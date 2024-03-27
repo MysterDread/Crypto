@@ -3,9 +3,19 @@ import pandas as pd
 import plotly.graph_objs as go
 import requests
 import psycopg2
-import dotenv
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
+
+database_config = {
+        "database": os.environ.get('database'),
+        "user": os.environ.get('user'),
+        "password": os.environ.get('sql_password'),
+        "host": os.environ.get('host'),
+        "port": "5432"  
+    }
 # CoinMarketCap API Key
 api_key = "5a80172e-2ab0-4b5d-a773-e606e722472d"
 
@@ -53,12 +63,13 @@ def create_line_graph(data, title):
 
 # Function to fetch data from PostgreSQL table
 def fetch_data_from_postgresql(asset_id_base):
+    connection = None  # Initialize connection variable
     try:
         connection = psycopg2.connect(
-            dbname="pagila",
-            user="de_dofu",
-            password="gration",
-            host="data-sandbox.c1tykfvfhpit.eu-west-2.rds.amazonaws.com",
+            dbname=os.environ.get('database'),
+            user=os.environ.get('user'),
+            password=os.environ.get('sql_password'),
+            host=os.environ.get('host'),
             port="5432"
         )
         cursor = connection.cursor()
@@ -81,8 +92,8 @@ def fetch_data_from_postgresql(asset_id_base):
         st.error(f"Error fetching data from PostgreSQL: {e}")
         return pd.DataFrame(columns=['time_of_scrape', 'rate']), None, None 
     finally:
-        if connection:
-            connection.close()
+        if connection is not None:
+            connection.close()  # Close connection if it's not None
 
 # Function to fetch current price of cryptocurrency from CoinMarketCap
 def fetch_current_price_from_coinmarketcap(coin_id):
@@ -166,7 +177,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
