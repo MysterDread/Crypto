@@ -1,6 +1,6 @@
 streamlit
 pandas
-plotly.graph_objs
+plotly
 requests
 psycopg2
 dotenv 
