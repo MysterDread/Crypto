@@ -1,0 +1,8 @@
+streamlit
+pandas
+plotly.graph_objs
+requests
+psycopg2
+dotenv 
+load_dotenv
+os
